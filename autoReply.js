@@ -7,9 +7,10 @@ const puppeteer = require('puppeteer-core');  // Use puppeteer-core to use syste
 
 const client = new Client({
   authStrategy: new LocalAuth({ clientId: "mainBot" }),
-  puppeteer: { 
-    headless: true,  // Run Chromium in headless mode
-    executablePath: '/usr/bin/chromium-browser'  // Path to system-installed Chromium
+  puppeteer: {
+    headless: true,
+    executablePath: '/usr/bin/chromium-browser',  // Path to system-installed Chromium
+    args: ['--no-sandbox', '--disable-setuid-sandbox']  // Add --no-sandbox flag
   },
 });
 
