@@ -3,10 +3,16 @@ const qrcode = require("qrcode-terminal");
 const fs = require("fs");
 const START_TIME = Date.now(); // record the time when bot starts
 
+const puppeteer = require('puppeteer-core');  // Use puppeteer-core to use system-installed Chromium
+
 const client = new Client({
   authStrategy: new LocalAuth({ clientId: "mainBot" }),
-  puppeteer: { headless: true },
+  puppeteer: { 
+    headless: true,  // Run Chromium in headless mode
+    executablePath: '/usr/bin/chromium-browser'  // Path to system-installed Chromium
+  },
 });
+
 const TRIGGERS = [
   "الإشتراك",
   "اشتراك",
@@ -28,6 +34,7 @@ const TRIGGERS = [
   "information",
   "حساب"
 ];
+
 const COOLDOWN_HOURS = 720;
 const STORE = "./lastReplied.json";
 const SUBSCRIBED_FILE = "./subscribed.json";
@@ -35,6 +42,7 @@ const SUBSCRIBED_FILE = "./subscribed.json";
 let lastReplied = fs.existsSync(STORE)
   ? JSON.parse(fs.readFileSync(STORE))
   : {};
+
 const saveStore = () =>
   fs.writeFileSync(STORE, JSON.stringify(lastReplied, null, 2));
 
