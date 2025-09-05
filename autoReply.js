@@ -1,7 +1,6 @@
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const fs = require("fs");
-const START_TIME = Date.now(); // record the time when bot starts
 
 const puppeteer = require('puppeteer-core');  // Use puppeteer-core to use system-installed Chromium
 
@@ -88,9 +87,6 @@ client.on("message", async (msg) => {
   const state = await client.getState();
   if (state !== "CONNECTED") return;
 
-  if (msg.timestamp * 1000 < START_TIME) {
-    return;
-  }
   if (subscribed[msg.from]) {
     // log activity only (no auto-reply, no sendSeen)
     const today = new Date().toLocaleDateString("en-CA");

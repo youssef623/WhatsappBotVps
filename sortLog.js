@@ -24,6 +24,6 @@ fs.readFile('subscribedLog.json', 'utf8', (err, data) => {
       console.error("Error writing to file:", err);
       return;
     }
-    console.log("Data sorted by days and saved to sortedSubscribedLog.json");
+    console.log("Data sorted by days and saved to SubscribedLog.json");
   });
 });
