@@ -167,7 +167,7 @@ client.on("message", async (msg) => {
 
 يعني من الاخر بتوفر 💰وفي نفس الوقت بتاخد كل حاجة…..!🧠`
   );
-  await randomDelay(); // waits 1–5 seconds
+  await delay(2000);
 
   await client.sendMessage(
     msg.from,
