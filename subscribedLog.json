@@ -1,8 +1,8 @@
 {
   "201002141264@c.us": {
-    "lastMessaged": "2025-09-04",
-    "messages": 22,
-    "days": 2
+    "lastMessaged": "2025-09-05",
+    "messages": 25,
+    "days": 3
   },
   "201060904718@c.us": {
     "lastMessaged": "2025-09-04",
@@ -50,9 +50,9 @@
     "days": 1
   },
   "201013497526@c.us": {
-    "lastMessaged": "2025-09-04",
-    "messages": 1,
-    "days": 1
+    "lastMessaged": "2025-09-05",
+    "messages": 10,
+    "days": 2
   },
   "201128613959@c.us": {
     "lastMessaged": "2025-09-04",
@@ -181,7 +181,7 @@
   },
   "201002493388@c.us": {
     "lastMessaged": "2025-09-05",
-    "messages": 1,
+    "messages": 3,
     "days": 1
   },
   "201224418718@c.us": {
@@ -231,7 +231,7 @@
   },
   "201030985177@c.us": {
     "lastMessaged": "2025-09-05",
-    "messages": 1,
+    "messages": 3,
     "days": 1
   },
   "201022513054@c.us": {
@@ -292,6 +292,21 @@
   "201029254222@c.us": {
     "lastMessaged": "2025-09-05",
     "messages": 1,
+    "days": 1
+  },
+  "201551515058@c.us": {
+    "lastMessaged": "2025-09-05",
+    "messages": 2,
+    "days": 1
+  },
+  "201144729200@c.us": {
+    "lastMessaged": "2025-09-05",
+    "messages": 8,
+    "days": 1
+  },
+  "201022336636@c.us": {
+    "lastMessaged": "2025-09-05",
+    "messages": 6,
     "days": 1
   }
 }
