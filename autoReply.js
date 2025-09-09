@@ -33,6 +33,8 @@ const TRIGGERS = [
   "details",
   "information",
   "حساب",
+  "السلام",
+  "عليكم"
 ];
 
 const COOLDOWN_HOURS = 720;
@@ -130,6 +132,7 @@ client.on("message", async (msg) => {
 
   const text = (msg.body || "").toLowerCase();
   if (!TRIGGERS.some((w) => text.includes(w))) {
+    await handleUnanswered(msg, "Non-subscriber");
     return;
   }
 
