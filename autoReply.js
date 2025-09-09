@@ -34,8 +34,10 @@ const TRIGGERS = [
   "information",
   "حساب",
   "السلام",
-  "عليكم"
+  "عليكم",
 ];
+const BOT_NUMBER = "201000062966@c.us";
+const MY_NUMBER = "201002141264@c.us";
 
 const COOLDOWN_HOURS = 720;
 const STORE = "./lastReplied.json";
@@ -97,6 +99,10 @@ client.on("disconnected", (reason) => {
 client.on("message", async (msg) => {
   const state = await client.getState();
   if (state !== "CONNECTED") return;
+
+  if (msg.from === BOT_NUMBER) {
+    return;
+  }
 
   if (subscribed[msg.from]) {
     // log activity only (no auto-reply, no sendSeen)
@@ -213,10 +219,11 @@ async function handleUnanswered(msg, type) {
     console.log(`⏰ Quiet hours: skipped notification for ${msg.from}`);
     return;
   }
-  const MY_NUMBER = "201002141264@c.us";
+  const formattedNumber = msg.from.replace("@c.us", "");
+
   await client.sendMessage(
     MY_NUMBER,
-    `${type} \n\n ⚠️ Unanswered message from \n ${msg.from}"`
+    `*${type}* \n\n  ${formattedNumber}\n\n "${msg.body}"`
   );
 
   notificationSent[msg.from] = now;
