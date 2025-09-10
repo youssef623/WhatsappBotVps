@@ -278,7 +278,7 @@ async function handleUnanswered(msg, type) {
   const last = notificationSent[msg.from] || 0;
   const minsSince = (now - last) / (1000 * 60);
 
-  if (minsSince < 15) return;
+  if (minsSince < 15 && msg.from !== Karam_NUMBER) return;
   if (isQuietHoursCairo()) {
     console.log(`⏰ Quiet hours: skipped notification for ${msg.from}`);
     return;
