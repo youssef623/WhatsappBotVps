@@ -199,7 +199,6 @@ client.on("message", async (msg) => {
   const last = lastReplied[msg.from] || 0;
   const hoursSince = (now - last) / (1000 * 60 * 60);
   if (hoursSince < COOLDOWN_HOURS) {
-    await handleUnanswered(msg, "Non-subscriber");
     return;
   }
 
