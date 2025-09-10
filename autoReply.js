@@ -41,7 +41,6 @@ const BOT_NUMBER = "201000062966@c.us";
 const MY_NUMBER = "201002141264@c.us";
 const Karam_NUMBER = "201098400086@c.us";
 
-
 const COOLDOWN_HOURS = 720;
 const STORE = "./lastReplied.json";
 const SUBSCRIBED_FILE = "./subscribed.json";
@@ -146,8 +145,7 @@ client.on("message", async (msg) => {
   const state = await client.getState();
   if (state !== "CONNECTED") return;
 
-    if (msg.fromMe || msg.from === MY_NUMBER || msg.from === BOT_NUMBER) return;
-
+  if (msg.fromMe || msg.from === MY_NUMBER || msg.from === BOT_NUMBER) return;
 
   const key = ensureTodayStats();
   dailyStats[key].messagesTotal += 1;
@@ -183,7 +181,7 @@ client.on("message", async (msg) => {
       subscribedLog[msg.from].lastMessaged = today;
       subscribedLog[msg.from].messages += 1;
     }
-    await handleUnanswered(msg, "Subscriber");
+    await handleUnanswered(msg, "Subscriber", msg.body);
     saveSubscribedLog();
 
     return;
@@ -195,15 +193,11 @@ client.on("message", async (msg) => {
   const matched = TRIGGERS.some((w) => text.includes(w));
 
   if (!matched) {
-    await client.sendMessage(
-    MY_NUMBER,
-    "!matched"
-  );
-  console.log("msg.body:", msg.body , "from:", msg.from);
-    await handleUnanswered(msg, "Non-subscriber");
+    await client.sendMessage(MY_NUMBER, "!matched");
+    console.log("msg.body:", msg.body, "from:", msg.from);
+    await handleUnanswered(msg, "Non-subscriber", msg.body);
     return;
   }
-
 
   const now = Date.now();
   const last = lastReplied[msg.from] || 0;
@@ -273,7 +267,7 @@ function delay(ms) {
 
 client.initialize();
 
-async function handleUnanswered(msg, type) {
+async function handleUnanswered(msg, type, body) {
   const now = Date.now();
   const last = notificationSent[msg.from] || 0;
   const minsSince = (now - last) / (1000 * 60);
@@ -284,11 +278,19 @@ async function handleUnanswered(msg, type) {
     return;
   }
   const formattedNumber = msg.from.replace("@c.us", "");
-
-  await client.sendMessage(
-    MY_NUMBER,
-    `*${type}* \n\n  ${formattedNumber}\n\n "${msg.body}"`
-  );
+  if (body != "") {
+    await client.sendMessage(
+      MY_NUMBER,
+      `*${type}* \n\n  ${formattedNumber}\n\n "${body}"`
+    );
+  }
+  else
+  {
+    await client.sendMessage(
+      MY_NUMBER,
+      `*${type}* \n\n  ${formattedNumber}\n\n "error body empty!"`
+    );
+  }
 
   const key = ensureTodayStats();
   dailyStats[key].notificationsSentCount += 1;
@@ -303,12 +305,15 @@ function isQuietHoursCairo(d = new Date()) {
     timeZone: "Africa/Cairo",
     hour: "2-digit",
     hourCycle: "h23",
-  }).formatToParts(d).reduce((a,p)=>(a[p.type]=p.value,a),{});
+  })
+    .formatToParts(d)
+    .reduce((a, p) => ((a[p.type] = p.value), a), {});
   const h = parseInt(parts.hour, 10);
-  const QUIET_START = 3;  // inclusive
-  const QUIET_END   = 12; // exclusive
-  return QUIET_START <= QUIET_END ? (h >= QUIET_START && h < QUIET_END)
-                                  : (h >= QUIET_START || h < QUIET_END);
+  const QUIET_START = 3; // inclusive
+  const QUIET_END = 12; // exclusive
+  return QUIET_START <= QUIET_END
+    ? h >= QUIET_START && h < QUIET_END
+    : h >= QUIET_START || h < QUIET_END;
 }
 
 function randomDelay(min = 1000, max = 5000) {
