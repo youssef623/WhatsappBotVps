@@ -3,6 +3,7 @@ const qrcode = require("qrcode-terminal");
 const fs = require("fs");
 
 const puppeteer = require("puppeteer-core"); // Use puppeteer-core to use system-installed Chromium
+const { Console } = require("console");
 
 const client = new Client({
   authStrategy: new LocalAuth({ clientId: "mainBot" }),
@@ -38,6 +39,8 @@ const TRIGGERS = [
 ];
 const BOT_NUMBER = "201000062966@c.us";
 const MY_NUMBER = "201002141264@c.us";
+const Karam_NUMBER = "201098400086@c.us";
+
 
 const COOLDOWN_HOURS = 720;
 const STORE = "./lastReplied.json";
@@ -189,9 +192,14 @@ client.on("message", async (msg) => {
   addToUnique(dailyStats[key].nonSubSenders, msg.from);
   saveDailyStats();
   const text = (msg.body || "").toLowerCase();
-  const matched = TRIGGERS.find((w) => text.includes(w));
+  const matched = TRIGGERS.some((w) => text.includes(w));
 
   if (!matched) {
+    await client.sendMessage(
+    MY_NUMBER,
+    "!matched"
+  );
+  Console.log("msg.body:", msg.body , "from:", msg.from);
     await handleUnanswered(msg, "Non-subscriber");
     return;
   }
@@ -200,7 +208,7 @@ client.on("message", async (msg) => {
   const now = Date.now();
   const last = lastReplied[msg.from] || 0;
   const hoursSince = (now - last) / (1000 * 60 * 60);
-  if (hoursSince < COOLDOWN_HOURS) {
+  if (hoursSince < COOLDOWN_HOURS && msg.from !== Karam_NUMBER) {
     return;
   }
 
