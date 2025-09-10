@@ -189,7 +189,7 @@ client.on("message", async (msg) => {
   addToUnique(dailyStats[key].nonSubSenders, msg.from);
   saveDailyStats();
   const text = (msg.body || "").toLowerCase();
-  const matched = TRIGGERS.some((w) => text.includes(w));
+  const matched = TRIGGERS.find((w) => text.includes(w));
 
   if (!matched) {
     await handleUnanswered(msg, "Non-subscriber");
