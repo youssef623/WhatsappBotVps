@@ -147,6 +147,9 @@ client.on("message", async (msg) => {
 
   if (msg.fromMe || msg.from === MY_NUMBER || msg.from === BOT_NUMBER) return;
 
+   if (!msg.body || msg.body.trim() === "") {
+    return;
+  }
   const key = ensureTodayStats();
   dailyStats[key].messagesTotal += 1;
   addToUnique(dailyStats[key].uniqueSenders, msg.from);
@@ -193,7 +196,6 @@ client.on("message", async (msg) => {
   const matched = TRIGGERS.some((w) => text.includes(w));
 
   if (!matched) {
-    await client.sendMessage(MY_NUMBER, "!matched");
     console.log("msg.body:", msg.body, "from:", msg.from);
     await handleUnanswered(msg, "Non-subscriber", msg.body);
     return;
