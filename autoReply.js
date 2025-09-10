@@ -199,7 +199,7 @@ client.on("message", async (msg) => {
     MY_NUMBER,
     "!matched"
   );
-  Console.log("msg.body:", msg.body , "from:", msg.from);
+  console.log("msg.body:", msg.body , "from:", msg.from);
     await handleUnanswered(msg, "Non-subscriber");
     return;
   }
