@@ -143,9 +143,8 @@ client.on("message", async (msg) => {
   const state = await client.getState();
   if (state !== "CONNECTED") return;
 
-  if (msg.from === BOT_NUMBER) {
-    return;
-  }
+    if (msg.fromMe || msg.from === MY_NUMBER || msg.from === BOT_NUMBER) return;
+
 
   const key = ensureTodayStats();
   dailyStats[key].messagesTotal += 1;
@@ -190,10 +189,13 @@ client.on("message", async (msg) => {
   addToUnique(dailyStats[key].nonSubSenders, msg.from);
   saveDailyStats();
   const text = (msg.body || "").toLowerCase();
-  if (!TRIGGERS.some((w) => text.includes(w))) {
+  const matched = TRIGGERS.some((w) => text.includes(w));
+
+  if (!matched) {
     await handleUnanswered(msg, "Non-subscriber");
     return;
   }
+
 
   const now = Date.now();
   const last = lastReplied[msg.from] || 0;
