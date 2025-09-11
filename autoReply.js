@@ -116,6 +116,7 @@ function ensureTodayStats() {
       uniqueSenders: [], // store as arrays for persistence
       subscribedSenders: [],
       nonSubSenders: [],
+      subscribedQuietHoursSenders: [],
     };
     saveDailyStats();
   }
@@ -147,7 +148,7 @@ client.on("message", async (msg) => {
 
   if (msg.fromMe || msg.from === MY_NUMBER || msg.from === BOT_NUMBER) return;
 
-   if (!msg.body || msg.body.trim() === "") {
+  if (!msg.body || msg.body.trim() === "") {
     return;
   }
   const key = ensureTodayStats();
@@ -183,6 +184,19 @@ client.on("message", async (msg) => {
 
       subscribedLog[msg.from].lastMessaged = today;
       subscribedLog[msg.from].messages += 1;
+    }
+    if (isQuietHoursCairo()) {
+      addToUnique(dailyStats[key].subscribedQuietHoursSenders, msg.from);
+      
+
+      await client.sendMessage(
+        msg.from,
+        "مواعيد العمل من 1 ظهرًا لحد 3 فجرًا، ابعتلنا استفسارك وهنرد عليك في اسرع وقت ❤️"
+      );
+      dailyStats[key].autoRepliedCount += 1; // <-- add this
+      saveDailyStats();
+      saveSubscribedLog();
+      return;
     }
     await handleUnanswered(msg, "Subscriber", msg.body);
     saveSubscribedLog();
@@ -285,9 +299,7 @@ async function handleUnanswered(msg, type, body) {
       MY_NUMBER,
       `*${type}* \n\n  ${formattedNumber}\n\n "${body}"`
     );
-  }
-  else
-  {
+  } else {
     await client.sendMessage(
       MY_NUMBER,
       `*${type}* \n\n  ${formattedNumber}\n\n "error body empty!"`
@@ -366,15 +378,19 @@ async function sendDailyReport(key = todayKeyCairo()) {
     ? s.subscribedSenders.length
     : 0;
   const nonSubs = Array.isArray(s.nonSubSenders) ? s.nonSubSenders.length : 0;
+  const subsQuiet = Array.isArray(s.subscribedQuietHoursSenders)
+    ? s.subscribedQuietHoursSenders.length
+    : 0;
 
   const report = [
     `📊 *Daily Stats* (${key} – Cairo)`,
-    `• Subscribed people messaged: *${subs}*`,
     `• Auto-replies sent: *${autoRepliedCount}*`,
-    `• Total messages received: *${messagesTotal}*`,
-    `• Notifications sent: *${notificationsSentCount}*`,
     `• Unique people contacted: *${uniquePeople}*`,
+    `• Total messages received: *${messagesTotal}*`,
     `• Non-subscribers who contacted: *${nonSubs}*`,
+    `• Subscribed people messaged: *${subs}*`,
+    `• Subscribed messaged during quiet hours: *${subsQuiet}*`,
+    `• Notifications sent: *${notificationsSentCount}*`,
   ].join("\n");
 
   await client.sendMessage(MY_NUMBER, report);
