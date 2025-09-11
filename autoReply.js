@@ -210,7 +210,6 @@ client.on("message", async (msg) => {
   const matched = TRIGGERS.some((w) => text.includes(w));
 
   if (!matched) {
-    console.log("msg.body:", msg.body, "from:", msg.from);
     await handleUnanswered(msg, "Non-subscriber", msg.body);
     return;
   }
