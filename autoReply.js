@@ -187,13 +187,18 @@ client.on("message", async (msg) => {
     }
     if (isQuietHoursCairo()) {
       addToUnique(dailyStats[key].subscribedQuietHoursSenders, msg.from);
-      
+      if (
+        !subscribedLog[msg.from].quietHoursSentOn ||
+        subscribedLog[msg.from].quietHoursSentOn !== today
+      ) {
+        await client.sendMessage(
+          msg.from,
+          "مواعيد العمل من 1 ظهرًا لحد 3 فجرًا، ابعتلنا استفسارك وهنرد عليك في اسرع وقت ❤️"
+        );
 
-      await client.sendMessage(
-        msg.from,
-        "مواعيد العمل من 1 ظهرًا لحد 3 فجرًا، ابعتلنا استفسارك وهنرد عليك في اسرع وقت ❤️"
-      );
-      dailyStats[key].autoRepliedCount += 1; // <-- add this
+        subscribedLog[msg.from].quietHoursSentOn = today;
+        dailyStats[key].autoRepliedCount += 1;
+      }
       saveDailyStats();
       saveSubscribedLog();
       return;
