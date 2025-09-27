@@ -127,6 +127,13 @@ function addToUnique(listArr, id) {
   if (!listArr.includes(id)) listArr.push(id);
 }
 
+const pages = await client.puppeteer.pages();
+if (pages.length === 0) {
+  console.log("⚠️ No active pages. Reinitializing...");
+  await client.initialize();
+}
+
+
 // Show QR if first time
 client.on("qr", (qr) => {
   qrcode.generate(qr, { small: true });
@@ -138,8 +145,10 @@ client.on("ready", () => {
   startDailyReportTicker();
 });
 
-client.on("disconnected", (reason) => {
+client.on("disconnected", async (reason) => {
   console.log("⚠️ Disconnected:", reason);
+    await client.initialize();
+
 });
 
 client.on("message", async (msg) => {
@@ -244,7 +253,7 @@ client.on("message", async (msg) => {
 
 يعني من الاخر بتوفر 💰وفي نفس الوقت بتاخد كل حاجة…..!🧠`
   );
-  
+
   await delay(2000);
 
   await client.sendMessage(
