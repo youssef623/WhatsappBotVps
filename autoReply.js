@@ -127,6 +127,30 @@ function addToUnique(listArr, id) {
   if (!listArr.includes(id)) listArr.push(id);
 }
 
+async function checkPageAndReinitialize() {
+  try {
+    const pages = await client.puppeteer.pages();
+    if (pages.length === 0) {
+      console.log("⚠️ No active pages, reinitializing...");
+      await client.initialize();  // Reinitialize the client if no pages are found
+    } else {
+      const page = pages[0];
+      await page.evaluate(() => {
+        return document.title;  // Replace with your actual page interaction
+      });
+    }
+  } catch (error) {
+    console.error("Error with Puppeteer:", error);
+    await client.initialize();  // Attempt to reinitialize the client if there's an error
+  }
+}
+
+// Periodically check if the page is still active
+setInterval(async () => {
+  await checkPageAndReinitialize();
+}, 5000);  // Check every 5 seconds
+
+
 // Show QR if first time
 client.on("qr", (qr) => {
   qrcode.generate(qr, { small: true });
