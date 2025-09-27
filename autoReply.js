@@ -213,12 +213,11 @@ client.on("message", async (msg) => {
   await chat.sendSeen();
 
   await client.sendMessage(
-    msg.from,
-    `اشترك في ChatGPT Plus – إصدار ChatGPT 5 بخصم 70٪
+    msg.from,`اشترك في ChatGPT Plus – إصدار ChatGPT 5 بخصم 70٪
 على التطبيق و الموقع الرسمي
 
 -  شهر حساب مشترك مع ٥ اشخاص :
- ✅بسعر 230 جنية / الشهر
+ ✅بسعر 299 جنية / الشهر
 
 ✨ ليه تختارنا عن باقي الصفحات؟
 
@@ -228,20 +227,14 @@ client.on("message", async (msg) => {
 2️⃣ أمان واستقرار الخدمة
 إحنا ملتزمين بعدد المستخدمين المتفق عليه، وبالتالي مش هتواجه مشاكل زي Suspicious Activity أو توقف مفاجئ.
 
-شرح الحساب المشترك👇`
-  );
-  await randomDelay(); // waits 1–5 seconds
+شرح الحساب المشترك👇
 
-  await client.sendMessage(
-    msg.from,
-    `شرح الحساب المشترك👇
-
-230 جنية / الشهر
-الحساب المشترك في ChatGPT Plus – إصدار ChatGPT 5 هو حساب و اشتراك واحد بيتقسم على 5 أشخاص تبعنا حضرتك واحد منهم (مش بتجيب انت ناس) 👥، وده بيخلي التكلفة أقل بكتير علي الفرد 230 جنية بس 💸، لكن من غير أي تأثير على المميزات أو السرعة ⚡️.
+✅299 جنية / الشهر
+الحساب المشترك في ChatGPT Plus – إصدار ChatGPT 5 هو حساب و اشتراك واحد بيتقسم على 5 أشخاص تبعنا حضرتك واحد منهم (مش بتجيب انت ناس) 👥، وده بيخلي التكلفة أقل بكتير علي الفرد 299 جنية بس 💸، لكن من غير أي تأثير على المميزات أو السرعة ⚡️.
 
 هتقدر تستمتع بكل حاجة موجودة في البلص🦾
 
-‏١- GPT-5 بأقصى سرعة وبدون أي حدود 🚀
+١- GPT-5 بأقصى سرعة وبدون أي حدود 🚀
 ٢-تعديل وتصميم الصور بحد اقصي 30 صورة كل 3 ساعات للحساب 🎨
 ٣-فيديوهات Sora الجديدة 🎬
 ٤-رفع صور 🖼️ و فايلات 📁
@@ -251,6 +244,7 @@ client.on("message", async (msg) => {
 
 يعني من الاخر بتوفر 💰وفي نفس الوقت بتاخد كل حاجة…..!🧠`
   );
+  
   await delay(2000);
 
   await client.sendMessage(
@@ -275,7 +269,7 @@ async function handleUnanswered(msg, type, body) {
   const last = notificationSent[msg.from] || 0;
   const minsSince = (now - last) / (1000 * 60);
 
-  if (minsSince < 15 && msg.from !== Karam_NUMBER) return;
+  if (minsSince < 5 && msg.from !== Karam_NUMBER) return;
   if (isQuietHoursCairo()) {
     console.log(`⏰ Quiet hours: skipped notification for ${msg.from}`);
     return;
