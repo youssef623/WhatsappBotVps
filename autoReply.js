@@ -127,12 +127,18 @@ function addToUnique(listArr, id) {
   if (!listArr.includes(id)) listArr.push(id);
 }
 
-const pages = await client.puppeteer.pages();
-if (pages.length === 0) {
-  console.log("⚠️ No active pages. Reinitializing...");
-  await client.initialize();
+async function checkPages() {
+  const pages = await client.puppeteer.pages();
+  if (pages.length === 0) {
+    console.log("⚠️ No active pages found, reinitializing...");
+    await client.initialize();
+  }
 }
 
+// Call this function periodically, for example, in a setInterval
+setInterval(async () => {
+  await checkPages();
+}, 5000); 
 
 // Show QR if first time
 client.on("qr", (qr) => {
