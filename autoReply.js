@@ -5,14 +5,49 @@ const fs = require("fs");
 const puppeteer = require("puppeteer-core"); // Use puppeteer-core to use system-installed Chromium
 const { Console } = require("console");
 
+async function checkPageAndReinitialize() {
+  try {
+    // Ensure Puppeteer is initialized and ready
+    if (!client.puppeteer || !client.puppeteer.isConnected()) {
+      console.log("Puppeteer is not initialized. Reinitializing...");
+      await client.initialize();  // Initialize the client if not already initialized
+    }
+
+    const pages = await client.puppeteer.pages();
+    if (pages.length === 0) {
+      console.log("⚠️ No active pages found, reinitializing...");
+      await client.initialize();  // Reinitialize the client if no pages are found
+    } else {
+      const page = pages[0];
+      await page.evaluate(() => {
+        return document.title;  // Replace with your actual page interaction
+      });
+    }
+  } catch (error) {
+    console.error("Error with Puppeteer:", error);
+    await client.initialize();  // Attempt to reinitialize the client if there's an error
+  }
+}
+
+// Periodically check if the page is still active
+setInterval(async () => {
+  await checkPageAndReinitialize();
+}, 5000);  // Check every 5 seconds
+
+// Reinitialize client with unique session directory for each instance
 const client = new Client({
   authStrategy: new LocalAuth({ clientId: "mainBot" }),
   puppeteer: {
     headless: true,
-    executablePath: "/usr/bin/chromium-browser", // Path to system-installed Chromium
-    args: ["--no-sandbox", "--disable-setuid-sandbox"], // Add --no-sandbox flag
+    executablePath: "/usr/bin/chromium-browser",
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      `--user-data-dir=/root/WhatsappBotVps/.wwebjs_auth/session-mainBot_${Date.now()}` // Unique session directory
+    ],
   },
 });
+
 
 const TRIGGERS = [
   "الإشتراك",
@@ -126,29 +161,6 @@ function ensureTodayStats() {
 function addToUnique(listArr, id) {
   if (!listArr.includes(id)) listArr.push(id);
 }
-
-async function checkPageAndReinitialize() {
-  try {
-    const pages = await client.puppeteer.pages();
-    if (pages.length === 0) {
-      console.log("⚠️ No active pages, reinitializing...");
-      await client.initialize();  // Reinitialize the client if no pages are found
-    } else {
-      const page = pages[0];
-      await page.evaluate(() => {
-        return document.title;  // Replace with your actual page interaction
-      });
-    }
-  } catch (error) {
-    console.error("Error with Puppeteer:", error);
-    await client.initialize();  // Attempt to reinitialize the client if there's an error
-  }
-}
-
-// Periodically check if the page is still active
-setInterval(async () => {
-  await checkPageAndReinitialize();
-}, 5000);  // Check every 5 seconds
 
 
 // Show QR if first time
