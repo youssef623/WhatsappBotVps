@@ -11,8 +11,10 @@ const client = new Client({
     headless: true,
     executablePath: "/usr/bin/chromium-browser", // Path to system-installed Chromium
     args: ["--no-sandbox", "--disable-setuid-sandbox"], // Add --no-sandbox flag
+    userDataDir: "/path/to/persistent/directory" // Add this to store session data persistently
   },
 });
+
 
 const TRIGGERS = [
   "الإشتراك",
@@ -138,8 +140,10 @@ client.on("ready", () => {
   startDailyReportTicker();
 });
 
-client.on("disconnected", (reason) => {
+client.on("disconnected", async (reason) => {
   console.log("⚠️ Disconnected:", reason);
+  console.log("Reconnecting...");
+  await client.initialize();  // Reinitialize the client
 });
 
 client.on("message", async (msg) => {
